@@ -1,0 +1,13 @@
+# Runtime data (snapshots, changelog, session cookies, generated dashboard)
+data/*
+!data/.gitkeep
+
+# Local config may contain a Slack webhook URL -- keep it out of git
+config.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env

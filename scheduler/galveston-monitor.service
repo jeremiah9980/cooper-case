@@ -1,0 +1,18 @@
+# systemd service (paired with galveston-monitor.timer) for a background poll.
+# Install (Linux, as your user):
+#   mkdir -p ~/.config/systemd/user
+#   cp scheduler/galveston-monitor.* ~/.config/systemd/user/
+#   # edit WorkingDirectory below to your clone path first
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now galveston-monitor.timer
+#   journalctl --user -u galveston-monitor.service -f   # watch logs
+[Unit]
+Description=Galveston County case monitor (single poll)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/cooper-case
+ExecStart=/usr/bin/python3 -m galveston_scraper poll
+# Optionally set the Slack webhook here instead of config.json:
+# Environment=GALV_WEBHOOK_URL=https://hooks.slack.com/services/XXX/YYY/ZZZ
