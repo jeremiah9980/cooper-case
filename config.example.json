@@ -1,0 +1,19 @@
+{
+  "case_number": "24-CR-1362",
+  "portal_base_url": "https://portalnav19.galvestoncountytx.gov/Portal",
+  "case_detail_url": "",
+  "data_dir": "data",
+  "poll_interval_seconds": 420,
+  "headless": true,
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+  "notify": {
+    "console": true,
+    "webhook_url": "",
+    "webhook_format": "slack"
+  },
+  "_comments": {
+    "case_detail_url": "Filled in automatically by `python -m galveston_scraper bootstrap`. You can also paste it here manually (see README).",
+    "webhook_url": "Optional. A Slack/Discord/generic incoming-webhook URL. Leave blank to disable.",
+    "webhook_format": "One of: slack, discord, generic."
+  }
+}
