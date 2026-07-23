@@ -136,16 +136,28 @@ rather notify elsewhere.
 
 ## 4. Run every 5–10 minutes
 
-Pick one:
+Pick the one that matches where you run it:
 
-- **Foreground loop:** `./scheduler/run_loop.sh` (uses `poll_interval_seconds`
-  from config; default 420 s = 7 min).
-- **cron:** see [`scheduler/cron.md`](scheduler/cron.md) — e.g. `*/7 * * * *`.
-- **systemd timer:** see [`scheduler/galveston-monitor.service`](scheduler/galveston-monitor.service)
+- **macOS (recommended on a Mac):** `./scheduler/install_macos.sh` installs a
+  launchd agent that polls every `poll_interval_seconds` (default 7 min), runs
+  on login, and fires on wake. Remove with `./scheduler/install_macos.sh remove`.
+  Logs go to `data/monitor.log`.
+- **cron (Linux/macOS):** see [`scheduler/cron.md`](scheduler/cron.md) — e.g.
+  `*/7 * * * *`.
+- **systemd timer (Linux):** see
+  [`scheduler/galveston-monitor.service`](scheduler/galveston-monitor.service)
   and `.timer` (fires every 7 min).
+- **Foreground loop (any OS, quick + temporary):** `./scheduler/run_loop.sh` —
+  keeps polling until you close the Terminal.
 
 The dashboard at **`data/dashboard.html`** is regenerated on every poll — open
 it in a browser, or serve `data/` behind any static web server / GitHub Pages.
+
+> **Laptop caveat:** any local scheduler only runs while the machine is powered
+> on and logged in — a closed/asleep MacBook does not poll (launchd catches up
+> on the next wake). For true 24/7 coverage, run the poller on an always-on box
+> (a small cloud VM, a home server) — copy the `data/` folder there after
+> bootstrapping, or bootstrap once and point it at the same `case_detail_url`.
 
 ---
 
