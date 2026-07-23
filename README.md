@@ -48,25 +48,39 @@ Python 3.10+.
 
 ## 1. Bootstrap (capture the case URL)
 
-**Option A — interactive** (on a desktop with a screen). A browser window opens;
-solve the captcha, search `24-CR-1362`, click into the case:
+> Run this from **inside the repo directory** (`cd cooper-case`) so the
+> `galveston_scraper` package resolves.
+
+This portal renders case detail inside its single-page *WorkspaceMode* — the
+address bar stays on `.../Home/WorkspaceMode?p=0#CaseInformation` instead of a
+real `/Cases/CaseDetail` URL. So there is nothing useful to copy from the
+address bar. Instead the tool watches network traffic and grabs the request the
+page itself makes (`.../Portal/Cases/CaseDetail?eid=<token>`), which *is*
+captcha-free and reloadable.
+
+**Option A — interactive (recommended).** A browser window opens; solve the
+captcha, search `24-CR-1362`, and click the case in the results:
 
 ```sh
 python -m galveston_scraper bootstrap
 ```
 
-The tool auto-detects the case-detail page and saves it.
+The tool captures the underlying `CaseDetail?eid=...` request automatically,
+verifies it reloads the case, and saves it. You only solve the captcha once.
 
-**Option B — paste the URL** (works anywhere, including headless servers). In
-*your own* browser, search the case, open it, copy the URL from the address
-bar, then:
+**Option B — paste the URL.** Only useful if you already have a real
+`CaseDetail?eid=...` URL (e.g. from your browser's DevTools ▸ Network tab). The
+plain `WorkspaceMode?p=0` URL will **not** work.
 
 ```sh
-python -m galveston_scraper bootstrap --case-url "https://portalnav19.galvestoncountytx.gov/Portal/Cases/CaseDetail?...."
+python -m galveston_scraper bootstrap --case-url "https://portalnav19.galvestoncountytx.gov/Portal/Cases/CaseDetail?eid=...."
 ```
 
-Either way the URL is stored in `data/bootstrap.json`. You can also just paste
-it into `case_detail_url` in `config.json` and skip bootstrap entirely.
+> **zsh note:** always wrap the URL in quotes. Unquoted, zsh treats the `?` in
+> the URL as a glob and fails with `zsh: no matches found`.
+
+Either way the URL is stored in `data/bootstrap.json`. You can also paste it
+into `case_detail_url` in `config.json` and skip bootstrap entirely.
 
 Check state at any time:
 
