@@ -11,9 +11,15 @@
     "webhook_url": "",
     "webhook_format": "slack"
   },
+  "publish": {
+    "enabled": false,
+    "branch": "gh-pages",
+    "remote": "origin"
+  },
   "_comments": {
     "case_detail_url": "Filled in automatically by `python -m galveston_scraper bootstrap`. You can also paste it here manually (see README).",
     "webhook_url": "Optional. A Slack/Discord/generic incoming-webhook URL. Leave blank to disable.",
-    "webhook_format": "One of: slack, discord, generic."
+    "webhook_format": "One of: slack, discord, generic.",
+    "publish": "Set enabled=true to force-push data/dashboard.html to the GitHub Pages branch on every poll. Enable Pages for that branch in the repo settings. On a PUBLIC repo this makes the case dashboard publicly viewable."
   }
 }

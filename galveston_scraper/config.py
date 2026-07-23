@@ -23,6 +23,14 @@ class NotifyConfig:
 
 
 @dataclass
+class PublishConfig:
+    # Push data/dashboard.html to a GitHub Pages branch on every poll.
+    enabled: bool = False
+    branch: str = "gh-pages"
+    remote: str = "origin"
+
+
+@dataclass
 class Config:
     case_number: str = "24-CR-1362"
     portal_base_url: str = "https://portalnav19.galvestoncountytx.gov/Portal"
@@ -32,6 +40,7 @@ class Config:
     headless: bool = True
     user_agent: str = DEFAULT_UA
     notify: NotifyConfig = field(default_factory=NotifyConfig)
+    publish: PublishConfig = field(default_factory=PublishConfig)
 
     # --- paths derived from data_dir ---------------------------------------
     @property
@@ -95,6 +104,10 @@ def _env_overrides(cfg: Config) -> None:
         cfg.notify.webhook_url = v
     if v := os.environ.get("GALV_HEADLESS"):
         cfg.headless = v.strip().lower() not in ("0", "false", "no")
+    if v := os.environ.get("GALV_PUBLISH"):
+        cfg.publish.enabled = v.strip().lower() not in ("0", "false", "no")
+    if v := os.environ.get("GALV_PUBLISH_BRANCH"):
+        cfg.publish.branch = v
 
 
 def load_config(path: str | os.PathLike[str] | None = None) -> Config:
@@ -116,6 +129,12 @@ def load_config(path: str | os.PathLike[str] | None = None) -> Config:
         webhook_url=notify_data.get("webhook_url", ""),
         webhook_format=notify_data.get("webhook_format", "slack"),
     )
+    publish_data = data.get("publish", {}) or {}
+    publish = PublishConfig(
+        enabled=publish_data.get("enabled", False),
+        branch=publish_data.get("branch", "gh-pages"),
+        remote=publish_data.get("remote", "origin"),
+    )
     cfg = Config(
         case_number=data.get("case_number", Config.case_number),
         portal_base_url=data.get("portal_base_url", Config.portal_base_url),
@@ -125,6 +144,7 @@ def load_config(path: str | os.PathLike[str] | None = None) -> Config:
         headless=data.get("headless", Config.headless),
         user_agent=data.get("user_agent", DEFAULT_UA),
         notify=notify,
+        publish=publish,
     )
     _env_overrides(cfg)
     return cfg
