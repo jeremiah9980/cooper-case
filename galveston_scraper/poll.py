@@ -10,6 +10,7 @@ from .browser import browser_context
 from .config import Config
 from .dashboard import build_dashboard
 from .diff import diff_snapshots
+from .publisher import publish_dashboard
 from .report import report_changes
 from .scrape import fetch_snapshot
 
@@ -51,6 +52,7 @@ def poll_once(cfg: Config) -> list[dict]:
     _save_snapshot(cfg, snapshot)
     report_changes(cfg, snapshot, changes)
     build_dashboard(cfg)
+    publish_dashboard(cfg)
     return changes
 
 

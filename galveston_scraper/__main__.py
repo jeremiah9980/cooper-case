@@ -18,6 +18,7 @@ from .bootstrap import bootstrap_from_url, bootstrap_interactive
 from .config import load_config
 from .dashboard import build_dashboard
 from .poll import poll_loop, poll_once
+from .publisher import publish_dashboard
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -64,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "dashboard":
         path = build_dashboard(cfg)
         print(f"Wrote {path}")
+        if cfg.publish.enabled:
+            publish_dashboard(cfg)
         return 0
 
     if args.command == "status":
@@ -78,6 +81,8 @@ def main(argv: list[str] | None = None) -> int:
                     "has_session": cfg.state_file.exists(),
                     "has_snapshot": cfg.latest_snapshot_file.exists(),
                     "slack_webhook_set": bool(cfg.notify.webhook_url),
+                    "publish_enabled": cfg.publish.enabled,
+                    "publish_branch": cfg.publish.branch if cfg.publish.enabled else None,
                 },
                 indent=2,
             )

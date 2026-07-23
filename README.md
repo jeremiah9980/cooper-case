@@ -177,6 +177,35 @@ Rebuild it on demand without polling:
 python -m galveston_scraper dashboard
 ```
 
+### Publish it to a public URL (GitHub Pages)
+
+To get a stable URL that refreshes on every poll, enable publishing. On each
+poll the tool force-pushes `data/dashboard.html` to a `gh-pages` branch as a
+single orphan commit (no history bloat, never touches your working tree or
+`main`):
+
+1. In `config.json`:
+
+   ```json
+   "publish": { "enabled": true, "branch": "gh-pages", "remote": "origin" }
+   ```
+
+   or set `GALV_PUBLISH=1`.
+
+2. Do one poll (or `python -m galveston_scraper dashboard`) to create the
+   branch, then in GitHub: **Settings ▸ Pages ▸ Source = Deploy from a branch ▸
+   `gh-pages` / root**. Your dashboard appears at
+   `https://<you>.github.io/cooper-case/`.
+
+> ⚠️ **Visibility:** on a **public** repo this makes the case number, charges,
+> and status publicly viewable and search-indexable. On a **private** repo,
+> GitHub Pages requires a paid plan. Publishing is **off** by default.
+>
+> The background scheduler must be able to `git push` non-interactively — make
+> sure your credential helper or SSH key is available to it (a plain HTTPS
+> remote that prompts for a password will fail silently under launchd/cron;
+> publish errors are logged to `data/monitor.log`, never fatal to a poll).
+
 ---
 
 ## Configuration reference
